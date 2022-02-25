@@ -60,10 +60,42 @@ $(function() {
     return cutMovies = cutMovies.slice(startIndex, lastIndex)
   }
 
+  // remove favorite movie
+  function removeFromFavorite(id) {
+    const movie = favoriteMovies.findIndex(movie => movie.id === id)
+    favoriteMovies.splice(movie, 1)
+    localStorage.setItem('favorite', `${JSON.stringify(favoriteMovies)}`)
+    renderMovieList(cutMoviesByPage(1))
+    renderPagination(favoriteMovies.length)
+  }
+
+  // show movie detail
+  function showMovieDetail(id) {
+    favoriteMovies.find(item => {
+      if (id === item.id) {
+        $movieModalTitle.text(item.title)
+        $movieModalDate.html(`<i>Release date: ${item.release_date}</i>`)
+        $movieModalDescription.text(item.description)
+        $movieModalImage.html(`
+          <img src="${POSTER_URL + item.image}" alt="movie-modal-poster">
+        `)
+      }
+    })
+  }
+
   // start favorite page
   renderMovieList(cutMoviesByPage(1))
   renderPagination(favoriteMovies.length)
 
+  // show movie detail or remove to favorite
+  $dataPanel.on('click', '.card button', function (event) {
+    const $this = $(this)
+    if (String($this.attr('id')) === 'more-btn') {
+      showMovieDetail(Number(event.target.dataset.id))
+    } else if (String($this.attr('id')) === 'remove-btn') {
+      removeFromFavorite(Number(event.target.dataset.id))
+    }
+  })
 
   // search favorite movies
   $searchForm.on('submit', function (event) {
@@ -85,6 +117,4 @@ $(function() {
       renderMovieList(cutMoviesByPage(number))
     }
   })
-
-
 })
