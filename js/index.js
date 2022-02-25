@@ -129,6 +129,16 @@ $(function() {
     })
   .catch((error) => console.log(error))
   
+  // toggle movies style: card or list
+  $toggleStyle.on('click', 'div', function (event) {
+    const $this = $(this)
+    if ($this.attr('id') === 'toggle-card') {
+      toggleCardStyle()
+    } else if ($this.attr('id') === 'toggle-list') {
+      toggleListStyle()
+    }
+  })
+  
   // render search movies on card or list style
   $searchForm.on('submit', function (event) {
     event.preventDefault()
