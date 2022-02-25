@@ -59,10 +59,32 @@ $(function() {
     let cutMovies = searchMovie.length > 0 ? searchMovie : favoriteMovies
     return cutMovies = cutMovies.slice(startIndex, lastIndex)
   }
-  
+
   // start favorite page
   renderMovieList(cutMoviesByPage(1))
   renderPagination(favoriteMovies.length)
+
+
+  // search favorite movies
+  $searchForm.on('submit', function (event) {
+    event.preventDefault()
+    const value = $searchInput.val()
+    searchMovie = favoriteMovies.filter(movie => movie.title.toLowerCase().includes(value.trim().toLowerCase()))
+
+    if (searchMovie.length === 0) {
+      return alert(`無法找尋相關電影, ${value}`)
+    }
+    renderMovieList(cutMoviesByPage(1))
+    renderPagination(searchMovie.length)
+  })
+
+  // render movies by pagination
+  $pagination.on('click', 'li', function (event) {
+    const number = event.target.dataset.id
+    if (number) {
+      renderMovieList(cutMoviesByPage(number))
+    }
+  })
 
 
 })
