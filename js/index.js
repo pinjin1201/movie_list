@@ -145,6 +145,7 @@ $(function() {
     localStorage.setItem('favorite', `${JSON.stringify(favoriteMovie)}`)
   }
 
+  
   // get API data: Array(80) movies list, and render to HTML
   axios.get(DATA_URL)
     .then((response) => {
