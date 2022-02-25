@@ -120,6 +120,31 @@ $(function() {
     $pagination.html(page)
   }
 
+  // show movie detail
+  function showMovieDetail(id) {
+    movies.find(item => {
+      if (id === item.id) {
+        $movieModalTitle.text(item.title)
+        $movieModalDate.html(`<i>Release date: ${item.release_date}</i>`)
+        $movieModalDescription.text(item.description)
+        $movieModalImage.html(`
+          <img src="${POSTER_URL + item.image}" alt="movie-modal-poster">
+        `)
+      }
+    })
+  }
+
+  // add movie to favorite page
+  function addToFavorite(id) {
+    const favoriteMovie = JSON.parse(localStorage.getItem('favorite')) || []
+    const movie = movies.find(movie => movie.id === id)
+    if (favoriteMovie.some(movie => movie.id === id)) {
+      return alert(`${movie.title} 已經在收藏清單中!`)
+    }
+    favoriteMovie.push(movie)
+    localStorage.setItem('favorite', `${JSON.stringify(favoriteMovie)}`)
+  }
+
   // get API data: Array(80) movies list, and render to HTML
   axios.get(DATA_URL)
     .then((response) => {
@@ -138,7 +163,17 @@ $(function() {
       toggleListStyle()
     }
   })
-  
+
+  // show movie detail or add to favorite
+  $movieStyle.on('click', '.movie-item button', function (event) {
+    const $this = $(this)
+    if (String($this.attr('id')) === 'more-btn') {
+      showMovieDetail(Number(event.target.dataset.id))
+    } else if (String($this.attr('id')) === 'favorite-btn') {
+      addToFavorite(Number(event.target.dataset.id))
+    }
+  })
+
   // render search movies on card or list style
   $searchForm.on('submit', function (event) {
     event.preventDefault()
